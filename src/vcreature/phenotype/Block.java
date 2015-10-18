@@ -234,43 +234,53 @@ public class Block
 
   /**
    * 
-   * @return
+   * @return the id of the parent or -1 if this is a root block.
    */
-  public int getIdOfParent(){ return parent.getID();}
+  public int getIdOfParent()
+  { 
+    if (parent == null) return -1;
+    return parent.getID();
+  }
   
 
   /**
    *
-   * @return
+   * @return Full extent (not half extent) of the block along the x-axis of 
+   * its local coordinates (before any rotations).
    */
   public float getSizeX() {return sizeX;}
   
 
   /**
-   *
-   * @return
+   * 
+   * @return Full extent (not half extent) of the block along the y-axis of 
+   * its local coordinates (before any rotations).
    */
   public float getSizeY() {return sizeY;}
   
 
   /**
    *
-   * @return
+   * @return Full extent (not half extent) of the block along the z-axis of 
+   * its local coordinates (before any rotations).
    */
   public float getSize() {return sizeZ;}
   
   /**
-   *
+   * Careful when using this. It gives a pointer to the block's childList.
+   * If this is corrupted the results are continued use of the creature class 
+   * are undefined.
    * @return
    */
   public ArrayList<Block> getChildList() {return childList;}
   
   
   /**
-   *
    * @return
    */
   public ArrayList<Neuron> getNeuronTable() { return neuronTable;}
+  
+  
   
   
   /**
