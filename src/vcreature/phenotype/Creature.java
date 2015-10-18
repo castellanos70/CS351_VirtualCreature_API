@@ -215,8 +215,11 @@ public class Creature
   
   /**
    * Removes the block at the specified id and all of its descendants from this creature.
-   * The root will always have an id=0. 
-   * @param id of block within the creature. 
+   * After the subtree has been removed, all remaining block ids are updated so that:
+   * 1) The root always has id=0.
+   * 2) Every block in the creature has an integer id from 0 through n-1 where n is the 
+   *    number of blocks in the creature.
+   * @param id of block within the creature to be removed along wiht all of its desendants. 
    */
   public void removeSubTree(int id)
   {
@@ -226,13 +229,33 @@ public class Creature
   
   /**
    * Removes the specified block and all of its descendants from this creature.
-   * @param block
+   * After the subtree has been removed, all remaining block ids are updated so that:
+   * 1) The root always has id=0.
+   * 2) Every block in the creature has an integer id from 0 through n-1 where n is the 
+   *    number of blocks in the creature.
+   * @param block within the creature to be removed along wiht all of its desendants. 
    */
   public void removeSubTree(Block block)
   {
+    removeSubTreeHelper(block);
+  
+    for (int i=1; i<body.size(); i++)
+    {
+      body.get(i).setID(i);
+    }
+  }
+    
+    
+   /**
+   * This method should only be called by removeSubTree() which is needed to 
+   * update all block ids after all the removes are done.
+   * @param block
+   */
+  private void removeSubTreeHelper(Block block)
+  {
     for (Block child : block.getChildList())
     {
-      removeSubTree(child);
+      removeSubTreeHelper(child);
     }
     
     physicsSpace.remove(block.getPhysicsControl());
@@ -242,7 +265,6 @@ public class Creature
     Geometry geometry = block.getGeometry();
     geometry.removeFromParent();
     
-    //System.out.println("remove("+block+")");
     block.clear();
     body.remove(block);
   }
