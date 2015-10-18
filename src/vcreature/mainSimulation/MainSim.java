@@ -23,8 +23,6 @@ import com.jme3.light.AmbientLight;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.system.AppSettings;
-import static vcreature.mainSimulation.FlappyBird2.PI;
-import vcreature.phenotype.Creature;
 
 public class MainSim extends SimpleApplication implements ActionListener
 {
@@ -36,9 +34,8 @@ public class MainSim extends SimpleApplication implements ActionListener
   
   //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
   private Vector3f tmpVec3; //
-  private Creature myCreature;
+  private FlappyBird myCreature;
   private boolean isCameraRotating = true;
-  private int flappyBirdModIdx = 0;
   
 
 
@@ -120,12 +117,10 @@ public class MainSim extends SimpleApplication implements ActionListener
   private void initKeys() {
     inputManager.addMapping("Quit",  new KeyTrigger(KeyInput.KEY_Q));
     inputManager.addMapping("Toggle Camera Rotation",  new KeyTrigger(KeyInput.KEY_P));
-    inputManager.addMapping("Change Creature",  new KeyTrigger(KeyInput.KEY_C));
 
     // Add the names to the action listener.
     inputManager.addListener(this,"Quit");
     inputManager.addListener(this,"Toggle Camera Rotation");
-    inputManager.addListener(this,"Change Creature");
   }
   
   public void onAction(String name, boolean isPressed, float timePerFrame) 
@@ -133,37 +128,10 @@ public class MainSim extends SimpleApplication implements ActionListener
     if (isPressed && name.equals("Toggle Camera Rotation"))
     { isCameraRotating = !isCameraRotating;
     }
-    else if (isPressed && name.equals("Change Creature"))
-    { System.out.format("Creature Fitness (Maximium height of lowest point) = %.3f meters]\n", myCreature.getFitness());
-      
-      if (flappyBirdModIdx == 0) 
-      { myCreature.remove();
-        flappyBirdModIdx++;
-        myCreature = new FlappyBird2(physicsSpace, rootNode);
-      }
-      else
-      {
-        myCreature.removeSubTree(2);
-        flappyBirdModIdx++;
-        float[] eulerAngles = {0, PI/6.0f, 0};
-        Vector3f leg3Size  = new Vector3f( 0.5f, 5.0f, 0.5f);
-        Block leg1 = myCreature.getBlockByID(1);
-        Vector3f pivotA = new Vector3f( 3.0f,  0.5f,  0.0f); 
-        Vector3f pivotB = new Vector3f( 0.0f, -5.0f,  0.0f); 
-        myCreature.addBlock(eulerAngles, leg3Size, leg1, pivotA,  pivotB, Vector3f.UNIT_Z, Vector3f.UNIT_Z);
-
-      }
-      
-      cameraAngle = (float)(Math.PI/2.0);
-      elapsedSimulationTime = 0.0f;
-      
-     
-    }
-    else if (isPressed && name.equals("Quit"))
+    else if (name.equals("Quit"))
     { System.out.format("Creature Fitness (Maximium height of lowest point) = %.3f meters]\n", myCreature.getFitness());
       System.exit(0);
     }
-    
   }
 
   
