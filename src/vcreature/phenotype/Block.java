@@ -14,10 +14,7 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import java.util.ArrayList;
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Quaternion;
 
 /**
  * The Class Block.
@@ -31,39 +28,36 @@ public class Block
   public static Material MATERIAL_BROWN;
   public static Material MATERIAL_GRAY;
   
-  private float sizeX, sizeY, sizeZ; //meters
+  private final float sizeX, sizeY, sizeZ; //meters
   private final Vector3f startCenter; //meters
-  private int id; //Assigned when added to Creature. 0=root and +1 for each block added in order the blocks are added. This is used by DNA and logic curits
+  private final int id; //Assigned when added to Creature. 0=root and +1 for each block added in order the blocks are added. This is used by DNA and logic curits
   
   private Block parent;
   private HingeJoint jointToParent;
-  private ArrayList<Neuron> neuronTable = new ArrayList<>();
-  private ArrayList<Block> childList    = new ArrayList<>();
+  private ArrayList<Neuron> neuronTable = new ArrayList<Neuron>();
+  private ArrayList<Block> childList    = new ArrayList<Block>();
   private Geometry geometry;
   private RigidBodyControl physicsControl;
   
   //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
-  private Vector3f tmpVec3 = new Vector3f(); //
-  private Quaternion tmpQuat = new Quaternion();
+  private Vector3f tmpVec3; //
   
   
   //Creates a box that has a center of 0,0,0 and extends in the out from 
     //the center by the given amount in each direction. 
     // So, for example, a box with extent of 0.5 would be the unit cube.
-  public Block(PhysicsSpace physicsSpace, Node rootNode, int id, Vector3f center, Vector3f size, Quaternion rotation) 
+  public Block(PhysicsSpace physicsSpace, Node rootNode, int id, Vector3f center, Vector3f size) 
   { 
     if (size.x < 0.5f || size.y < 0.5f || size.z < 0.5f) 
     { throw new IllegalArgumentException("No dimension may be less than 0.5 from block's center: ("+vectorToStr(size));
     }
     
     if (max(size) > 10*min(size))
-    {  throw new IllegalArgumentException("Largest dimension must be no more than 10x the smallest: ("+vectorToStr(size)+")");
+    {  throw new IllegalArgumentException("Largest dimension must be no more than 10x the smallest: ("+vectorToStr(size));
     }
     
     this.id = id;
-    
-    startCenter = center;
-    
+    startCenter = new Vector3f(center);
     sizeX = size.x*2;
     sizeY = size.y*2;
     sizeZ = size.z*2;
@@ -77,15 +71,11 @@ public class Block
     geometry.setMaterial(MATERIAL_GRAY);
     rootNode.attachChild(geometry);
     geometry.setShadowMode(ShadowMode.Cast);
-    geometry.rotate(rotation);
-    geometry.move(startCenter);
     
-    physicsControl = new RigidBodyControl(getMass());
+    BoxCollisionShape collisionBox = new BoxCollisionShape(size.mult(0.95f));
+    physicsControl = new RigidBodyControl(collisionBox, getMass());
     geometry.addControl(physicsControl);
-    
-    
-    physicsControl.setPhysicsRotation(rotation);
-    physicsControl.setPhysicsLocation(startCenter);
+    physicsControl.setPhysicsLocation(center);
     physicsSpace.add(physicsControl);
     physicsControl.setRestitution(PhysicsConstants.BLOCK_BOUNCINESS);
     physicsControl.setFriction(PhysicsConstants.SLIDING_FRICTION);
@@ -93,21 +83,7 @@ public class Block
             PhysicsConstants.ANGULAR_DAMPINING);
   }
   
-  
-  public void clear()
-  {
-    childList.clear();
-    neuronTable.clear();
-    
-    jointToParent = null;
-    
-    sizeX=0; sizeY=0; sizeZ=0;
-    startCenter.x = 0; startCenter.y = 0; startCenter.z = 0;
-    id = 0;
-    parent = null;
-    geometry = null;
-    physicsControl = null;
-  }
+  private void addChild(Block child) {childList.add(child);}
   
   public void setMaterial(Material mat)
   {
@@ -118,7 +94,7 @@ public class Block
   public void setJointToParent(Block parent, HingeJoint joint)
   {
      jointToParent = joint;
-     parent.childList.add(this);
+     parent.addChild(this);
      this.parent = parent;
   }
 
@@ -130,16 +106,6 @@ public class Block
   public Geometry getGeometry() {return geometry;}
   public RigidBodyControl getPhysicsControl() {return physicsControl;}
   public HingeJoint getJoint(){ return jointToParent;}
-  public float getJointAngle() { return jointToParent.getHingeAngle(); }
-  public Vector3f getCenter(Vector3f output) {return physicsControl.getPhysicsLocation(output); }
-  
-  public float getHeight()
-  {
-    BoundingBox box = (BoundingBox) geometry.getWorldBound();
-    tmpVec3 = box.getMin(tmpVec3);
-    return tmpVec3.y;
-  }
-  
   
   public int getID() {return id;}
 
@@ -153,9 +119,6 @@ public class Block
   
 
   public float getSize() {return sizeZ;}
-  
-  public ArrayList<Block> getChildList() {return childList;}
-  
   
   public ArrayList<Neuron> getNeuronTable() { return neuronTable;}
   
