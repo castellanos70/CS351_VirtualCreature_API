@@ -61,7 +61,13 @@ public class Neuron
    */
   public static final int E=4;
   
+  /**
+   *
+   */
   public static final int FIRST_HALF = 0;
+  /**
+   *
+   */
   public static final int SECOND_HALF = 2;
 
   /**

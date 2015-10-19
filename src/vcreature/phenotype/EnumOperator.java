@@ -5,12 +5,33 @@ package vcreature.phenotype;
  */
 public enum EnumOperator
 {
+  /**
+   *
+   */
   ADD      { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   SUBTRACT { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   MULTIPLY { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   POWER    { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   MAX      { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   MIN      { public boolean isUnary() {return false;}},
+  /**
+   *
+   */
   ARCTAN2  { public boolean isUnary() {return false;}},
   
   /** Unary operator. Returns absolute value of input. **/
@@ -34,7 +55,14 @@ public enum EnumOperator
   /** Unary operator. Returns natural exponential of input */
   EXP      { public boolean isUnary() {return true;}}; 
 
+  /**
+   *
+   * @return
+   */
   public abstract boolean isUnary();
   
+  /**
+   *
+   */
   public static final int SIZE = values().length;
 }

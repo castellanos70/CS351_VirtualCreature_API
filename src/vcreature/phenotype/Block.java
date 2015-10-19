@@ -26,27 +26,44 @@ public class Block
    * @deprecated 
    * should use PhysicsConstants.BLOCK_DENSITY 
    */
-  public static final float BLOCK_DENSITY = 4f; //Killograms per cubic meter.
+  public static final float BLOCK_DENSITY = 4f; 
+  
+  
   /**
-   *
+   * Basic red material with lighting properties.
+   * This is provided for convenience and has no effect on the physics.
    */
   public static Material MATERIAL_RED;
+  
+  
   /**
-   *
+   * Basic blue material with lighting properties.
+   * This is provided for convenience and has no effect on the physics.
    */
   public static Material MATERIAL_BLUE;
+  
+  
   /**
-   *
+   * Basic green material with lighting properties.
+   * This is provided for convenience and has no effect on the physics.
    */
   public static Material MATERIAL_GREEN;
+  
+  
+  
   /**
-   *
+   * Basic brown material with lighting properties.
+   * This is provided for convenience and has no effect on the physics.
    */
   public static Material MATERIAL_BROWN;
+  
+  
   /**
-   *
+   * Basic gray material with lighting properties.
+   * This is provided for convenience and has no effect on the physics.
    */
   public static Material MATERIAL_GRAY;
+  
   
   private float sizeX, sizeY, sizeZ; //meters
   private final Vector3f startCenter; //meters
@@ -64,16 +81,16 @@ public class Block
   private Quaternion tmpQuat = new Quaternion();
   
   
-  //Creates a box that has a center of 0,0,0 and extends in the out from 
-    //the center by the given amount in each direction. 
-    // So, for example, a box with extent of 0.5 would be the unit cube.
+  
   /**
-   *
+   * Creates a box
    * @param physicsSpace
    * @param rootNode
-   * @param id
-   * @param center
-   * @param size
+   * @param id Index of this block in the creature's body ArrayList
+   * @param center location in world coordinates of the center of the box.
+   * @param size  extent of box in each direction from the box's center. 
+   * So, for example, a box with extent of 0.5 in the x dimension
+   * would have a length in the x dimension of 1.0 meters.
    * @param rotation
    */
   public Block(PhysicsSpace physicsSpace, Node rootNode, int id, Vector3f center, Vector3f size, Quaternion rotation) 
@@ -121,7 +138,9 @@ public class Block
   
   
   /**
-   *
+   * Clears all data about the box. This is used when a box is removed form its
+   * creature and done just in case some other class hads mistakenly kept a pointer
+   * to the removed block.
    */
   public void clear()
   {
@@ -169,36 +188,54 @@ public class Block
      neuronTable.add(neuron);
   }
   
+  
   /**
    *
-   * @return
+   * @return geometry
    */
   public Geometry getGeometry() {return geometry;}
+  
+  
   /**
    *
-   * @return
+   * @return a pointer to the RigidBody physics control.
    */
   public RigidBodyControl getPhysicsControl() {return physicsControl;}
+  
+  
+  
   /**
    *
-   * @return
+   * @return a pointer to the joint to this block's parent (or null if 
+   * this is the root block).
    */
   public HingeJoint getJoint(){ return jointToParent;}
+  
+  
+  
   /**
    *
-   * @return
+   * @return the current angle in the physics simulation of the joint 
+   * to this block's parent. 
    */
   public float getJointAngle() { return jointToParent.getHingeAngle(); }
+  
+  
   /**
-   *
-   * @param output
-   * @return
+   * Sets the values in the given Vector3f output to the current center of the block
+   * in world coordinates. 
+   * 
+   * @param output Vector into which the center is stored.
+   * @return a pointer to the given Vector3f output for for easy chaining of calls.
    */
   public Vector3f getCenter(Vector3f output) {return physicsControl.getPhysicsLocation(output); }
+  
+  
   /**
-   *
-   * @param output
-   * @return
+   * Sets the values in the given Vector3f output to the original center (before the
+   * strating the simulation) of the block in world coordinates. 
+   * @param output Vector into which the center is stored.
+   * @return a pointer to the given Vector3f output for for easy chaining of calls.
    */
   public Vector3f getStartCenter(Vector3f output) 
   { output.x = startCenter.x;
@@ -209,8 +246,9 @@ public class Block
   
   
   /**
-   *
-   * @return
+   * 
+   * @return the height of the lowest face of this block's the bounding box 
+   * in meters
    */
   public float getHeight()
   {
@@ -222,7 +260,7 @@ public class Block
   
   /**
    *
-   * @return
+   * @return the index of this block in the creature.body ArrayList.
    */
   public int getID() {return id;}
   
@@ -277,7 +315,9 @@ public class Block
   
   
   /**
-   * @return
+   * @return the ArrayList of Neurons that can send an impulse to 
+   * the joint connecting this block to its parent. Returns null if this
+   * block is the root block.
    */
   public ArrayList<Neuron> getNeuronTable() { return neuronTable;}
   
@@ -285,7 +325,8 @@ public class Block
   
   
   /**
-   *
+   * If a program is to used any of these simple materials, then 
+   * this method must be called once some time before using the materials.
    * @param assetManager
    */
   public static void initStaticMaterials(AssetManager assetManager)
@@ -296,6 +337,8 @@ public class Block
     MATERIAL_BROWN = initStaticMaterial(assetManager, ColorRGBA.Brown);
     MATERIAL_GRAY  = initStaticMaterial(assetManager, ColorRGBA.Gray);
   }
+  
+  
   
   private static Material initStaticMaterial(AssetManager assetManager, ColorRGBA color)
   {
@@ -309,6 +352,12 @@ public class Block
   }
   
   
+  
+  /**
+   * This method may be useful in debugging. It returns a string that contains
+   * some information about this block.
+   * @return formatted String
+   */
   public String toString()
   {
     String s = "Block["+id+"]: {" + sizeX + ", " + sizeY + ", " + sizeZ + "}\n";
@@ -324,14 +373,14 @@ public class Block
   }
   
   
-   //Return the maximium impulse that can be supplyed by a joint on the given parent.
-  //The maximium impulse that can be applyed to a joint is proportional to the parent's surface area.
-  //The maximium impulse is returned in Newton seconds.
   /**
-   *
-   * @return
+   * Return the maximium impulse that can be supplyed by a joint on the 
+   * given parent.
+   * the maximium impulse that can be applyed to a joint is proportional to the parent's surface area.
+   * The maximium impulse is returned in Newton seconds.
+   * @return the maximium impulse in Newton seconds
    */
-  public final float getJointMaxImpulse()
+  public final float getJointMaxImpulse() 
   {
     
     return parent.sizeX*parent.sizeY + parent.sizeY*parent.sizeZ + parent.sizeZ*parent.sizeX;
@@ -340,7 +389,7 @@ public class Block
 
   /**
    *
-   * @return
+   * @return the mass of this block in kilograms.
    */
   public final float getMass()
   {
@@ -350,7 +399,7 @@ public class Block
   /**
    *
    * @param vec
-   * @return
+   * @return the minimum value in the given Vector3f.
    */
   public static float min(Vector3f vec)
   {
@@ -362,7 +411,7 @@ public class Block
   /**
    *
    * @param vec
-   * @return
+   * @return the maximum value in the given Vector3f.
    */
   public static float max(Vector3f vec)
   {
@@ -371,10 +420,14 @@ public class Block
     return vec.z;
   }
 
+  
+  
+  
   /**
-   *
+   * This method may be useful in debugging. It returns a string that contains
+   * the values in the vector.
    * @param vec
-   * @return
+   * @return formatted String
    */
   public static String vectorToStr(Vector3f vec)
   {

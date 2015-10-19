@@ -119,7 +119,7 @@ public class Creature
    * 
    * 
    * @param center ignored as this is now calculated.
-   * @param halfsize half the extent (in meters) of the block in the x, y and z direction.
+   * @param size 
    * @param parent Block instance onto which this block will be joined.
    * @param pivotA Location in local coordinates of the pivot point on the parent block. 
    * Local coordinates means the location on the block relitive to the block's center with zero rotation.
@@ -146,7 +146,6 @@ public class Creature
    * @param axisA One-degree of freedom hinge axis in local coordinates of the parent block.
    * @param axisB One-degree of freedom hinge axis in local coordinates of the this block.
    * @return a reference to the newly added block.
-   * @return
    */
   public Block addBlock(float[] eulerAngles, Vector3f halfsize, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB)
   {
@@ -271,7 +270,7 @@ public class Creature
   
   /**
    *
-   * @param id
+   * @param idx 
    * @param mat
    */
   public void setBlockMaterial(int idx, Material mat)
@@ -324,6 +323,12 @@ public class Creature
   public Vector3f getCenter(int id, Vector3f output) 
   { return body.get(id).getCenter(output); 
   }
+  /**
+   *
+   * @param id
+   * @param output
+   * @return
+   */
   public Vector3f getStartCenter(int id, Vector3f output) 
   { return body.get(id).getStartCenter(output); 
   }
