@@ -23,7 +23,8 @@ import com.jme3.math.Quaternion;
 public class Block
 {
   /**
-   *
+   * @deprecated 
+   * should use PhysicsConstants.BLOCK_DENSITY 
    */
   public static final float BLOCK_DENSITY = 4f; //Killograms per cubic meter.
   /**
@@ -343,7 +344,7 @@ public class Block
    */
   public final float getMass()
   {
-    return sizeX*sizeY*sizeZ*BLOCK_DENSITY;
+    return sizeX*sizeY*sizeZ*PhysicsConstants.BLOCK_DENSITY;
   }
 
   /**
@@ -352,11 +353,11 @@ public class Block
    * @return
    */
   public static float min(Vector3f vec)
-{
-  if (vec.x <= vec.y && vec.x <= vec.z) return vec.x;
-  if (vec.y <= vec.x && vec.y <= vec.z) return vec.y;
-  return vec.z;
-}
+  {
+    if (vec.x <= vec.y && vec.x <= vec.z) return vec.x;
+    if (vec.y <= vec.x && vec.y <= vec.z) return vec.y;
+    return vec.z;
+  }
 
   /**
    *
@@ -364,11 +365,11 @@ public class Block
    * @return
    */
   public static float max(Vector3f vec)
-{
-  if (vec.x >= vec.y && vec.x >= vec.z) return vec.x;
-  if (vec.y >= vec.x && vec.y >= vec.z) return vec.y;
-  return vec.z;
-}
+  {
+    if (vec.x >= vec.y && vec.x >= vec.z) return vec.x;
+    if (vec.y >= vec.x && vec.y >= vec.z) return vec.y;
+    return vec.z;
+  }
 
   /**
    *
@@ -376,8 +377,8 @@ public class Block
    * @return
    */
   public static String vectorToStr(Vector3f vec)
-{
-  return "("+vec.x +", "+vec.y +", "+vec.z +")";
-}
+  {
+    return "("+vec.x +", "+vec.y +", "+vec.z +")";
+  }
 
 }

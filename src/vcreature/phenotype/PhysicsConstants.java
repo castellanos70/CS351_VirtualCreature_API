@@ -4,6 +4,8 @@ import com.jme3.math.Vector3f;
 
 public class PhysicsConstants
 {
+  public static final float BLOCK_DENSITY = 4f; //Killograms per cubic meter.
+  
   public static final float BLOCK_BOUNCINESS  = 0.5f;
   public static final float GROUND_BOUNCINESS = 0.3f;
   public static final float SLIDING_FRICTION = 1.0f;
