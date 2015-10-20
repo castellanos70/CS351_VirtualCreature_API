@@ -91,5 +91,8 @@ public class FlappyBird2 extends Creature
     
     leg2.addNeuron(leg2Neuron1);
     leg2.addNeuron(leg2Neuron2);
+    
+    System.out.println(leg1Neuron1);
+    System.out.println(leg1Neuron2);
   }
 }
