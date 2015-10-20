@@ -45,6 +45,9 @@ public class Creature
   
   //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
   private Vector3f tmpVec3 = new Vector3f();
+  private Quaternion tmpQuat = new Quaternion();
+  
+  
   private float maxHeightOfLowestPoint = 0;  //fitness
   
   private float elapsedSimulationTime;
@@ -220,11 +223,12 @@ public class Creature
    *    number of blocks in the creature.
    * @param id of block within the creature to be removed along wiht all of its desendants. 
    */
-  public void removeSubTree(int id)
+  private void removeSubTree(int id)
   {
     Block block = body.get(id);
     removeSubTree(block);
   }
+  
   
   /**
    * Removes the specified block and all of its descendants from this creature.
@@ -234,14 +238,26 @@ public class Creature
    *    number of blocks in the creature.
    * @param block within the creature to be removed along wiht all of its desendants. 
    */
-  public void removeSubTree(Block block)
+  private void removeSubTree(Block block)
   {
     removeSubTreeHelper(block);
   
     for (int i=1; i<body.size(); i++)
     {
-      body.get(i).setID(i);
+      Block myBlock = body.get(i);
+      myBlock.setID(i);
+     
+      
+      //geometry.rotate(rotation);
+      //geometry.move(startCenter);
+    
+      //geometry.addControl(physicsControl);
+      //RigidBodyControl physics = myBlock.getPhysicsControl();
+      //physics.setPhysicsLocation(Vector3f.ZERO);
+      //physics.setPhysicsRotation(myBlock.getStartRotation(tmpQuat));
+      //physics.setPhysicsLocation(myBlock.getStartCenter(tmpVec3));
     }
+    
   }
     
     
@@ -264,7 +280,6 @@ public class Creature
     Geometry geometry = block.getGeometry();
     geometry.removeFromParent();
     
-    block.clear();
     body.remove(block);
   }
   

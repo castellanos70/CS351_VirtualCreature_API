@@ -38,7 +38,6 @@ public class MainSim extends SimpleApplication implements ActionListener
   private Vector3f tmpVec3; //
   private Creature myCreature;
   private boolean isCameraRotating = true;
-  private int flappyBirdModIdx = 0;
   
 
 
@@ -136,23 +135,10 @@ public class MainSim extends SimpleApplication implements ActionListener
     else if (isPressed && name.equals("Change Creature"))
     { System.out.format("Creature Fitness (Maximium height of lowest point) = %.3f meters]\n", myCreature.getFitness());
       
-      if (flappyBirdModIdx == 0) 
-      { myCreature.remove();
-        flappyBirdModIdx++;
-        myCreature = new FlappyBird2(physicsSpace, rootNode);
-      }
-      else
-      {
-        myCreature.removeSubTree(2);
-        flappyBirdModIdx++;
-        float[] eulerAngles = {0, PI/6.0f, 0};
-        Vector3f leg3Size  = new Vector3f( 0.5f, 5.0f, 0.5f);
-        Block leg1 = myCreature.getBlockByID(1);
-        Vector3f pivotA = new Vector3f( 3.0f,  0.5f,  0.0f); 
-        Vector3f pivotB = new Vector3f( 0.0f, -5.0f,  0.0f); 
-        myCreature.addBlock(eulerAngles, leg3Size, leg1, pivotA,  pivotB, Vector3f.UNIT_Z, Vector3f.UNIT_Z);
-
-      }
+      myCreature.remove();
+      myCreature = new FlappyBird2(physicsSpace, rootNode);
+     
+      
       
       cameraAngle = (float)(Math.PI/2.0);
       elapsedSimulationTime = 0.0f;

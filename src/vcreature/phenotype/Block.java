@@ -65,20 +65,21 @@ public class Block
   public static Material MATERIAL_GRAY;
   
   
-  private float sizeX, sizeY, sizeZ; //meters
+  private final float sizeX, sizeY, sizeZ; //meters
   private final Vector3f startCenter; //meters
+  private final Quaternion startRotation;
   private int id; //Assigned when added to Creature. 0=root and +1 for each block added in order the blocks are added. This is used by DNA and logic curits
   
   private Block parent;
   private HingeJoint jointToParent;
   private ArrayList<Neuron> neuronTable = new ArrayList<>();
   private ArrayList<Block> childList    = new ArrayList<>();
-  private Geometry geometry;
-  private RigidBodyControl physicsControl;
+  private final Geometry geometry;
+  private final RigidBodyControl physicsControl;
   
   //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
   private Vector3f tmpVec3 = new Vector3f(); //
-  private Quaternion tmpQuat = new Quaternion();
+  
   
   
   
@@ -88,10 +89,17 @@ public class Block
    * @param rootNode
    * @param id Index of this block in the creature's body ArrayList
    * @param center location in world coordinates of the center of the box.
+   *     The address of this Vector3f is copied into this blocks startCenter field.
+   *     Therefore, the address passed as center must be a new instrance of 
+   *     Vector3f and not reused for other data.
+   *
    * @param size  extent of box in each direction from the box's center. 
    * So, for example, a box with extent of 0.5 in the x dimension
    * would have a length in the x dimension of 1.0 meters.
-   * @param rotation
+   * @param rotation in world coordinates of this block.
+   *     The address of this Quaternion is copied into this blocks startRotation field.
+   *     Therefore, the address passed as rotation must be a new instrance of 
+   *     Quaternion and not reused for other data.
    */
   public Block(PhysicsSpace physicsSpace, Node rootNode, int id, Vector3f center, Vector3f size, Quaternion rotation) 
   { 
@@ -105,7 +113,10 @@ public class Block
     
     this.id = id;
     
-    startCenter = center;
+    //Copies only the address, but in the creature class, 
+    //  this addesss was created with new and is not reused
+    startCenter   = center; 
+    startRotation = rotation;
     
     sizeX = size.x*2;
     sizeY = size.y*2;
@@ -137,25 +148,7 @@ public class Block
   }
   
   
-  /**
-   * Clears all data about the box. This is used when a box is removed form its
-   * creature and done just in case some other class hads mistakenly kept a pointer
-   * to the removed block.
-   */
-  public void clear()
-  {
-    childList.clear();
-    neuronTable.clear();
-    
-    jointToParent = null;
-    
-    sizeX=0; sizeY=0; sizeZ=0;
-    startCenter.x = 0; startCenter.y = 0; startCenter.z = 0;
-    id = 0;
-    parent = null;
-    geometry = null;
-    physicsControl = null;
-  }
+
   
   /**
    *
@@ -242,6 +235,11 @@ public class Block
     output.y = startCenter.y;
     output.z = startCenter.z;
     return output; 
+  }
+  
+  public Quaternion getStartRotation(Quaternion  output) 
+  {
+    return physicsControl.getPhysicsRotation(output);
   }
   
   

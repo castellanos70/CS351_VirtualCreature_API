@@ -12,5 +12,3 @@ While running, this example, the following are keyboard commands:
        removed form the sim and a new FlappyBird2 creature is created.
        FlappyBird2 is the same as FappyBird only all blocks are rotated 30
        degrees.
-       The second time this is pressed, the FlappyBird2 creature has one of
-       its legs deleted and then a new leg is added.
