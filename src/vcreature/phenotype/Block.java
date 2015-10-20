@@ -68,7 +68,7 @@ public class Block
   private final float sizeX, sizeY, sizeZ; //meters
   private final Vector3f startCenter; //meters
   private final Quaternion startRotation;
-  private int id; //Assigned when added to Creature. 0=root and +1 for each block added in order the blocks are added. This is used by DNA and logic curits
+  private final int id; //Assigned when added to Creature. 0=root and +1 for each block added in order the blocks are added. This is used by DNA and logic curits
   
   private Block parent;
   private HingeJoint jointToParent;
@@ -263,12 +263,7 @@ public class Block
   public int getID() {return id;}
   
   
-   /**
-   * 
-   * setID() should only be used by the creature class when one or more blocks are deleated form the creature.
-   */
-  void setID(int id) {this.id = id;}
-
+   
   /**
    * 
    * @return the id of the parent or -1 if this is a root block.
