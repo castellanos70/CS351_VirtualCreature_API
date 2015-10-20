@@ -212,65 +212,28 @@ public class Creature
    */
   public void remove()
   {
-    removeSubTree(0);
-  }
-  
-  /**
-   * Removes the block at the specified id and all of its descendants from this creature.
-   * After the subtree has been removed, all remaining block ids are updated so that:
-   * 1) The root always has id=0.
-   * 2) Every block in the creature has an integer id from 0 through n-1 where n is the 
-   *    number of blocks in the creature.
-   * @param id of block within the creature to be removed along wiht all of its desendants. 
-   */
-  private void removeSubTree(int id)
-  {
-    Block block = body.get(id);
-    removeSubTree(block);
-  }
-  
-  
-  /**
-   * Removes the specified block and all of its descendants from this creature.
-   * After the subtree has been removed, all remaining block ids are updated so that:
-   * 1) The root always has id=0.
-   * 2) Every block in the creature has an integer id from 0 through n-1 where n is the 
-   *    number of blocks in the creature.
-   * @param block within the creature to be removed along wiht all of its desendants. 
-   */
-  private void removeSubTree(Block block)
-  {
-    removeSubTreeHelper(block);
-  
-    for (int i=1; i<body.size(); i++)
-    {
-      Block myBlock = body.get(i);
-      myBlock.setID(i);
-     
-      
-      //geometry.rotate(rotation);
-      //geometry.move(startCenter);
-    
-      //geometry.addControl(physicsControl);
-      //RigidBodyControl physics = myBlock.getPhysicsControl();
-      //physics.setPhysicsLocation(Vector3f.ZERO);
-      //physics.setPhysicsRotation(myBlock.getStartRotation(tmpQuat));
-      //physics.setPhysicsLocation(myBlock.getStartCenter(tmpVec3));
+    if (body.size() > 0)
+    { removeSubTree(body.get(0));
     }
     
-  }
+    body.clear();
     
+    maxHeightOfLowestPoint = 0;  //fitness
+    elapsedSimulationTime  = 0;
+  }
+  
+
     
    /**
-   * This method should only be called by removeSubTree() which is needed to 
+   * This method should only be called by itself or remove() which is needed to 
    * update all block ids after all the removes are done.
    * @param block
    */
-  private void removeSubTreeHelper(Block block)
+  private void removeSubTree(Block block)
   {
     for (Block child : block.getChildList())
     {
-      removeSubTreeHelper(child);
+      removeSubTree(child);
     }
     
     physicsSpace.remove(block.getPhysicsControl());
@@ -324,9 +287,12 @@ public class Creature
    * @param id of the child box.
    * @return the joint angle in radians +- deflection the zero point defined by the 
    * block orientations at the time the blocks were joined.
+   * Returns 0 if there is no block at index=idx or no joint to parent.
    */
-  public final float getJointAngle(int id)
-  { return body.get(id).getJointAngle();
+  public final float getJointAngle(int idx)
+  { 
+    if (idx < 0 || idx >= body.size()) return 0;
+    return body.get(idx).getJointAngle();
   }
   
   /**
@@ -353,9 +319,11 @@ public class Creature
    *
    * @param idx
    * @return the lowest y value of the bounding box of the block with the given id.
+   * Returns 0 if there is no block at index=idx.
    */
   public final float getHeight(int idx)
   { 
+    if (idx < 0 || idx >= body.size()) return 0;
     return body.get(idx).getHeight();
   }
   

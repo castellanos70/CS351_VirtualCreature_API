@@ -209,9 +209,13 @@ public class Block
   /**
    *
    * @return the current angle in the physics simulation of the joint 
-   * to this block's parent. 
+   * to this block's parent. Returns 0 if there is no parent (if this is 
+   * the root).
    */
-  public float getJointAngle() { return jointToParent.getHingeAngle(); }
+  public float getJointAngle() 
+  { if (jointToParent == null) return 0;
+    return jointToParent.getHingeAngle(); 
+  }
   
   
   /**

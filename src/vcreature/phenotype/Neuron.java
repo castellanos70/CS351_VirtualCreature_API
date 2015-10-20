@@ -39,7 +39,6 @@ package vcreature.phenotype;
 
 public class Neuron
 {
-
   /**
    * Constant used to specify input A.
    */
