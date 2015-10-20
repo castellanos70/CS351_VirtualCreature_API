@@ -242,10 +242,10 @@ public class Creature
   {
     removeSubTreeHelper(block);
   
-    for (int i=1; i<body.size(); i++)
-    {
-      Block myBlock = body.get(i);
-      myBlock.setID(i);
+    // for (int i=1; i<body.size(); i++)
+    // {
+    //   Block myBlock = body.get(i);
+    //   myBlock.setID(i);
      
       
       //geometry.rotate(rotation);
@@ -256,7 +256,7 @@ public class Creature
       //physics.setPhysicsLocation(Vector3f.ZERO);
       //physics.setPhysicsRotation(myBlock.getStartRotation(tmpQuat));
       //physics.setPhysicsLocation(myBlock.getStartCenter(tmpVec3));
-    }
+    // }
     
   }
     
