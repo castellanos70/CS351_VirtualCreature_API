@@ -39,6 +39,13 @@ package vcreature.phenotype;
 
 public class Neuron
 {
+   /**
+   * When a Neuron is created, its block index is set to UNDEFINED.
+   * Then, when it is added to the Neuron list of a joint, if the block inded is
+   * still UNDEFINED, it is set to the block's index.
+   */
+  public static final int UNDEFINED = -1;
+  
   /**
    * Constant used to specify input A.
    */
@@ -118,6 +125,10 @@ public class Neuron
     
     operator[1] = EnumOperator.IDENTITY;
     operator[3] = EnumOperator.IDENTITY;
+    
+    for (int i=0; i<blockIndex.length; i++)
+    { blockIndex[i] = UNDEFINED;
+    }
   }
   
   /**
@@ -143,7 +154,7 @@ public class Neuron
    * @param i
    * @return
    */
-  public int   getBlockIdx(int i) {return blockIndex[i];}
+  public int getBlockIdx(int i) {return blockIndex[i];}
   
   
   /**

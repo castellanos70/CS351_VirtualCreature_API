@@ -173,12 +173,19 @@ public class Block
   }
 
   /**
-   *
-   * @param neuron
+   * Adds the given Neuron to this blocks Neuron Table.
+   * At the time this Neuron is added, if any of its
+   * blockIds is UNDEFINED, then that blockId is set to the id of this block.
+   * @param neuron to be added to Neuron Table.
    */
   public void addNeuron(Neuron neuron)
   {
-     neuronTable.add(neuron);
+    for (int i=0; i<Neuron.TOTAL_INPUTS; i++)
+    { if (neuron.getBlockIdx(i) == Neuron.UNDEFINED)
+      { neuron.setBlockIdx(i,id);
+      }
+    }
+    neuronTable.add(neuron);
   }
   
   
