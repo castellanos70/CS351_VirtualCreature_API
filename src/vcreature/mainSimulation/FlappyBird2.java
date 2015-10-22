@@ -40,14 +40,14 @@ public class FlappyBird2 extends Creature
 
     //Notice that even though the blocks are rotated 30 degrees, since the pivot points and pivot axes are
     //   specified in each block's local coordinates, there is no change to these values.
-    Block leg1  = addBlock(eulerAngles, leg1Size,torso, pivotA,  pivotB, Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+    Block leg1  = addBlock(eulerAngles, leg1Size,torso, pivotA,  pivotB, Vector3f.UNIT_Z);
     
     
     
     Vector3f pivotC = new Vector3f(-2.0f, -1.5f,  0.0f); //Center of hinge in the block's coordinates
     Vector3f pivotD = new Vector3f( 3.0f,  0.5f,  0.0f); //Center of hinge in the block's coordinates
     
-    Block leg2  = addBlock(eulerAngles, leg2Size,torso, pivotC,  pivotD, Vector3f.UNIT_Z, Vector3f.UNIT_Z);
+    Block leg2  = addBlock(eulerAngles, leg2Size,torso, pivotC,  pivotD, Vector3f.UNIT_Z);
     
     
     
@@ -93,6 +93,5 @@ public class FlappyBird2 extends Creature
     
     //System.out.println(leg1Neuron1);
     //System.out.println(leg1Neuron2);
-    //updateBrain(0); //After you finish creating a creature, call with deltatime=0;
   }
 }

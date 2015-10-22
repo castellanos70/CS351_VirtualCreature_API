@@ -246,7 +246,11 @@ public class Block
     return output; 
   }
   
-  public Quaternion getStartRotation(Quaternion  output) 
+  
+  public Quaternion getStartRotation() {return startRotation;}
+  
+  
+  public Quaternion getRotation(Quaternion  output) 
   {
     return physicsControl.getPhysicsRotation(output);
   }

@@ -69,6 +69,5 @@ public class FlappyBird extends Creature
     leg2.addNeuron(leg2Neuron1);
     leg2.addNeuron(leg2Neuron2);
     
-    //updateBrain(0); //After you finish creating a creature, call with deltatime=0;
   }
 }

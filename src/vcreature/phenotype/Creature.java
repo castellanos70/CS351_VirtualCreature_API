@@ -116,9 +116,11 @@ public class Creature
   
   /**
    * @deprecated 
-   * @see #addBlock(float[] eulerAngles, Vector3f size, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB)
+   * @see #addBlock(float[] eulerAngles, Vector3f size, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA)
    * The center parameter is ignored as it can be calculated from the other information. Also,
-   * this can only be used to add axis alligned blocks.
+   * this can only be used to add axis alligned blocks.<br>
+   * Since axisB is totally determined by the other parameters, save yourself some trouble and 
+   * use the newer version of this method that calculates axisB.
    * 
    * 
    * @param center ignored as this is now calculated.
@@ -134,10 +136,15 @@ public class Creature
   public Block addBlock(Vector3f center, Vector3f size, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB)
   {
     float[] eulerAngles = {0,0,0};
-    return addBlock(eulerAngles, size, parent, pivotA, pivotB, axisA, axisB);
+    return addBlock(eulerAngles, size, parent, pivotA, pivotB, axisA);
   }
  
   /**
+   * @deprecated 
+   * @see #addBlock(float[] eulerAngles, Vector3f size, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA)
+   * Since axisB is totally determined by the other parameters, save yourself some trouble and 
+   * use the newer version of this method that calculates axisB.
+   * 
    * @param eulerAngles 
    * @param halfsize half the extent (in meters) of the block in the x, y and z direction. 
    * For example, a block with extent in the x dimension of 0.5 would extend from 0.5 meters from 
@@ -152,6 +159,34 @@ public class Creature
    */
   public Block addBlock(float[] eulerAngles, Vector3f halfsize, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA, Vector3f axisB)
   {
+    
+    return addBlock(eulerAngles, halfsize, parent, pivotA, pivotB, axisA);
+  }
+  
+  
+  
+  
+  
+  /** 
+   * Add a block to this creature with a hinge as the new block to the given parent at
+   * the given pivot points and along the given axis.
+   * The new block's center in world coordinates is calculated from the parent's world
+   * coordinates and the two local pivot points.
+   * The pivot on the new axis is calculated to match the povit axis on the parent.
+   * 
+   * @param eulerAngles 
+   * @param halfsize half the extent (in meters) of the block in the x, y and z direction. 
+   * For example, a block with extent in the x dimension of 0.5 would extend from 0.5 meters from 
+   * the origin in the -x direction and 0.5 meters from the origin in the +x direction.
+   * @param parent Block instance onto which this block will be joined.
+   * @param pivotA Location in local coordinates of the pivot point on the parent block. 
+   * Local coordinates means the location on the block relitive to the block's center with zero rotation.
+   * @param pivotB Location in local coordinates of the pivot point on this block.
+   * @param axisA One-degree of freedom hinge axis in local coordinates of the parent block.
+   * @return a reference to the newly added block.
+   */
+  public Block addBlock(float[] eulerAngles, Vector3f halfsize, Block parent, Vector3f pivotA, Vector3f pivotB, Vector3f axisA)
+  {
     if (body.isEmpty()) 
     { throw new IllegalArgumentException("This creature does not have a root Block.");
     }
@@ -159,14 +194,13 @@ public class Creature
     //Adding block resets the fitness of the creature.
     elapsedSimulationTime = 0;
     
-    
-    Quaternion rotation = new Quaternion(eulerAngles);
+    Quaternion rotationB = new Quaternion(eulerAngles);
     
     Transform parantTransform = parent.getGeometry().getWorldTransform();
     Vector3f pivotA_World = new Vector3f();
     parantTransform.transformVector(pivotA, pivotA_World);
     
-    Transform childTransform = new Transform(rotation);
+    Transform childTransform = new Transform(rotationB);
     
     Vector3f centerB = new Vector3f();
     childTransform.transformVector(pivotB, centerB);
@@ -176,9 +210,17 @@ public class Creature
     
     //print("center=",centerB);
     
-    Block block = new Block(physicsSpace, jMonkeyRootNode, body.size(), centerB, halfsize, rotation);
+    Block block = new Block(physicsSpace, jMonkeyRootNode, body.size(), centerB, halfsize, rotationB);
     body.add(block);
     
+    
+    Vector3f axisB = new Vector3f(axisA);
+    Transform parantRotation = new Transform(parent.getStartRotation());
+    parantRotation.transformVector(axisA, axisB);
+    Transform inverseChildRotation = new Transform(rotationB.inverse());
+    inverseChildRotation.transformVector(axisB, axisB);
+    
+    //print("axisB=",axisB);
     
     RigidBodyControl controlA = parent.getPhysicsControl();
     RigidBodyControl controlB = block.getPhysicsControl();
@@ -212,7 +254,7 @@ public class Creature
     }
     
     elapsedSimulationTime  = 0;
-    System.out.println("placeOnGround() shift:"+ -currentHeightOfLowestPoint);
+    System.out.println("Creature.placeOnGround() shift:"+ -currentHeightOfLowestPoint);
   }
 
   
