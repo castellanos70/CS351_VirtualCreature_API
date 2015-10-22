@@ -146,8 +146,6 @@ public class Block
     physicsControl.setDamping(PhysicsConstants.LINEAR_DAMPINING, 
             PhysicsConstants.ANGULAR_DAMPINING);
   }
-  
-  
 
   
   /**
@@ -263,7 +261,9 @@ public class Block
   {
     BoundingBox box = (BoundingBox) geometry.getWorldBound();
     tmpVec3 = box.getMin(tmpVec3);
-    return tmpVec3.y;
+    //System.out.println("Block["+id+"].getHeight() = "+tmpVec3.y);
+    float height = Math.max(0,tmpVec3.y);
+    return height;
   }
   
   

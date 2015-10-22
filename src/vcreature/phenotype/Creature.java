@@ -46,8 +46,7 @@ public class Creature
   //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
   private Vector3f tmpVec3 = new Vector3f();
   private Quaternion tmpQuat = new Quaternion();
-  
-  
+ 
   private float maxHeightOfLowestPoint = 0;  //fitness
   
   private float elapsedSimulationTime;
@@ -100,6 +99,7 @@ public class Creature
    */
   public Block addRoot(Vector3f rootCenter, Vector3f rootHalfSize, float[] eulerAngles)
   {
+    elapsedSimulationTime = 0;
     if (!body.isEmpty()) 
     { throw new IllegalArgumentException("This creature already has a root.");
     }
@@ -156,6 +156,9 @@ public class Creature
     { throw new IllegalArgumentException("This creature does not have a root Block.");
     }
     
+    //Adding block resets the fitness of the creature.
+    elapsedSimulationTime = 0;
+    
     
     Quaternion rotation = new Quaternion(eulerAngles);
     
@@ -171,6 +174,8 @@ public class Creature
 
     centerB.addLocal(pivotA_World);
     
+    //print("center=",centerB);
+    
     Block block = new Block(physicsSpace, jMonkeyRootNode, body.size(), centerB, halfsize, rotation);
     body.add(block);
     
@@ -178,7 +183,7 @@ public class Creature
     RigidBodyControl controlA = parent.getPhysicsControl();
     RigidBodyControl controlB = block.getPhysicsControl();
     HingeJoint joint = new HingeJoint(controlA, controlB, pivotA, pivotB, axisA, axisB);
-    joint.setCollisionBetweenLinkedBodys(false);
+    joint.setCollisionBetweenLinkedBodys(true);
     
     joint.setLimit(PhysicsConstants.JOINT_ANGLE_MIN, PhysicsConstants.JOINT_ANGLE_MAX);
     block.setJointToParent(parent, joint);
@@ -198,11 +203,16 @@ public class Creature
     float currentHeightOfLowestPoint = getCurrentHeightOfLowestPoint();
     for (Block block : body)
     {
+      //Geometry geometry = block.getGeometry();
+      //geometry.move(tmpVec3);
       RigidBodyControl physicsControl = block.getPhysicsControl();
       physicsControl.getPhysicsLocation(tmpVec3);
       tmpVec3.y -= currentHeightOfLowestPoint;
       physicsControl.setPhysicsLocation(tmpVec3);
     }
+    
+    elapsedSimulationTime  = 0;
+    System.out.println("placeOnGround() shift:"+ -currentHeightOfLowestPoint);
   }
 
   
@@ -216,17 +226,19 @@ public class Creature
     { removeSubTree(body.get(0));
     }
     
-    body.clear();
+    if (body.size() != 0)
+    {
+      System.out.println("ERROR: vcreature.phenotype.Creature.remove() failed");
+    }
     
-    maxHeightOfLowestPoint = 0;  //fitness
     elapsedSimulationTime  = 0;
   }
   
 
     
    /**
-   * This method should only be called by itself or remove() which is needed to 
-   * update all block ids after all the removes are done.
+   * This method should only be called by itself or remove() 
+   * to remove ALL blocks from the creature.
    * @param block
    */
   private void removeSubTree(Block block)
@@ -340,6 +352,16 @@ public class Creature
    */
   public float updateBrain(float elapsedSimulationTime)
   {
+    if (body.size() < 1) return 0;
+    if (this.elapsedSimulationTime == 0f) 
+    { 
+      physicsSpace.update(0);
+      maxHeightOfLowestPoint = 0;
+      System.out.println("Creature.updateBrain() start");
+      this.elapsedSimulationTime = elapsedSimulationTime;
+      return 0;
+    }
+    
     this.elapsedSimulationTime = elapsedSimulationTime;
     for (Block block : body)
     {
@@ -375,12 +397,15 @@ public class Creature
   //===========================================================================
   private float getCurrentHeightOfLowestPoint()
   {
+    if (body.size() < 1) return 0;
+    
     float currentHeightOfLowestPoint = Float.MAX_VALUE;
     for (Block block : body)
     {
       float height = block.getHeight();
       if (height < currentHeightOfLowestPoint) currentHeightOfLowestPoint = height;
     }
+    //System.out.println("getCurrentHeightOfLowestPoint(): " + currentHeightOfLowestPoint);
     return currentHeightOfLowestPoint;
     
   }

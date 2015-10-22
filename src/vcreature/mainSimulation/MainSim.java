@@ -86,6 +86,9 @@ public class MainSim extends SimpleApplication implements ActionListener
    
     Block.initStaticMaterials(assetManager);
     myCreature = new FlappyBird(physicsSpace, rootNode);
+    //myCreature = new Tigger(physicsSpace, rootNode);
+    
+    
     initLighting();
     initKeys();
 
@@ -137,13 +140,9 @@ public class MainSim extends SimpleApplication implements ActionListener
       
       myCreature.remove();
       myCreature = new FlappyBird2(physicsSpace, rootNode);
-     
-      
       
       cameraAngle = (float)(Math.PI/2.0);
       elapsedSimulationTime = 0.0f;
-      
-     
     }
     else if (isPressed && name.equals("Quit"))
     { System.out.format("Creature Fitness (Maximium height of lowest point) = %.3f meters]\n", myCreature.getFitness());

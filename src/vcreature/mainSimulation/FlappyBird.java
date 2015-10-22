@@ -13,7 +13,6 @@ import com.jme3.scene.Node;
 
 public class FlappyBird extends Creature
 {
-  
   public FlappyBird(PhysicsSpace physicsSpace, Node rootNode)
   {
     super(physicsSpace, rootNode);
@@ -69,5 +68,7 @@ public class FlappyBird extends Creature
     
     leg2.addNeuron(leg2Neuron1);
     leg2.addNeuron(leg2Neuron2);
+    
+    //updateBrain(0); //After you finish creating a creature, call with deltatime=0;
   }
 }
