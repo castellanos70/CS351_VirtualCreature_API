@@ -174,7 +174,8 @@ public class Creature
    * coordinates and the two local pivot points.
    * The pivot on the new axis is calculated to match the povit axis on the parent.
    * 
-   * @param eulerAngles 
+   * @param eulerAngles  Euler rotation angles (x,y,z) aka (pitch, yaw, rall)). 
+            Note: Euler angles are applying in order: (y, z, x) aka (yaw, roll, pitch).
    * @param halfsize half the extent (in meters) of the block in the x, y and z direction. 
    * For example, a block with extent in the x dimension of 0.5 would extend from 0.5 meters from 
    * the origin in the -x direction and 0.5 meters from the origin in the +x direction.
