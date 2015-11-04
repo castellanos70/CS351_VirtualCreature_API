@@ -211,6 +211,7 @@ public class Neuron
    * This method us used to get the output of either the first half or second half of 
    * the neuron. First the binary operator is applied to the two inputs. Then, the
    * operator result is given as input the the unary operator.
+   * If the result of an operation is NaN or +- infinity, then the result replaced with 0.
    * 
    * @param a First input value to specified half of this neuron.
    * @param b Second input value to the specified half of this neuron.
@@ -242,12 +243,12 @@ public class Neuron
     else if (operator[half+1] == EnumOperator.SIGN)     x = Math.signum(x);
     else if (operator[half+1] == EnumOperator.NEGATIVE) x = -x;
     else if (operator[half+1] == EnumOperator.LOG)        
-    { if (x<0) x = 0.0f;
+    { if (x<=0) x = 0.0f;
       x = (float)Math.log(x);
     }
     else if (operator[half+1] == EnumOperator.EXP)      x = (float)Math.exp(x);
     
-    if (Float.isNaN(x) || Float.isInfinite(x)) x = 0f; 
+    if (Float.isNaN(x) || Float.isInfinite(x)) x = 0.0f; 
     return x;
   }
   
