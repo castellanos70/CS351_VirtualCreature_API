@@ -450,7 +450,6 @@ public class Creature
     }
     //System.out.println("getCurrentHeightOfLowestPoint(): " + currentHeightOfLowestPoint);
     return currentHeightOfLowestPoint;
-    
   }
   
   /**

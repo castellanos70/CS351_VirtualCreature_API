@@ -225,7 +225,7 @@ public class Neuron
     }
     
     //Apply binary operator opIdx
-    float x = 0;
+    float x = 0.0f;
     if (operator[half] == EnumOperator.ADD)           x = a+b;
     else if (operator[half] == EnumOperator.SUBTRACT) x = a-b;
     else if (operator[half] == EnumOperator.MULTIPLY) x = a*b;
@@ -234,18 +234,21 @@ public class Neuron
     else if (operator[half] == EnumOperator.MAX)      x = Math.max(a,b);
     else if (operator[half] == EnumOperator.ARCTAN2)  x = (float)Math.atan2(a,b);
     
+    if (Float.isNaN(x) || Float.isInfinite(x)) x = 0.0f; 
+    
     //Apply unary operator opIdx+1
-    if (operator[half+1] == EnumOperator.ABS)           return Math.abs(x);
-    else if (operator[half+1] == EnumOperator.IDENTITY) return x;
-    else if (operator[half+1] == EnumOperator.SIN)      return (float)Math.sin(x);
-    else if (operator[half+1] == EnumOperator.SIGN)     return Math.signum(x);
-    else if (operator[half+1] == EnumOperator.NEGATIVE) return -x;
+    if (operator[half+1] == EnumOperator.ABS)           x = Math.abs(x);
+    else if (operator[half+1] == EnumOperator.SIN)      x = (float)Math.sin(x);
+    else if (operator[half+1] == EnumOperator.SIGN)     x = Math.signum(x);
+    else if (operator[half+1] == EnumOperator.NEGATIVE) x = -x;
     else if (operator[half+1] == EnumOperator.LOG)        
-    { if (x<0) return 0.0f;
-      return (float)Math.log(x);
+    { if (x<0) x = 0.0f;
+      x = (float)Math.log(x);
     }
-    else if (operator[half+1] == EnumOperator.EXP)      return (float)Math.exp(x);
-    return 0f;
+    else if (operator[half+1] == EnumOperator.EXP)      x = (float)Math.exp(x);
+    
+    if (Float.isNaN(x) || Float.isInfinite(x)) x = 0f; 
+    return x;
   }
   
 
